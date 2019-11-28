@@ -657,34 +657,37 @@ namespace Trajectories
             };
             if (Double.IsInfinity(orbit.timeToAp) || Double.IsInfinity(orbit.timeToPe))
             {
+                /* MKW - prevent errors in the PatchedConics implementation */
                 goto done;
             }
             try
             {
 
-                {
-                    UnityEngine.Debug.Log("[Trajectories] about to calculate patch. " +
-                        "Orbit.trueAnomaly[" + orbit.trueAnomaly + "], " +
-                        "Orbit.timeToAp[" + orbit.timeToAp+ "], " +
-                        "Orbit.timeToPe[" + orbit.timeToPe+ "], " +
-                        "Orbit.altitude[" + orbit.altitude + "], " +
-                        "Orbit.debugPos[" + orbit.debugPos + "], " +
-                        "Orbit.debugVel[" + orbit.debugVel + "], " +
-                        "ReferenceBody[" + state.ReferenceBody + "], " +
-                        "Time[" + state.Time + "]");
+                #if false
+                UnityEngine.Debug.Log("[Trajectories] about to calculate patch. " +
+                    "Orbit.trueAnomaly[" + orbit.trueAnomaly + "], " +
+                    "Orbit.timeToAp[" + orbit.timeToAp+ "], " +
+                    "Orbit.timeToPe[" + orbit.timeToPe+ "], " +
+                    "Orbit.altitude[" + orbit.altitude + "], " +
+                    "Orbit.debugPos[" + orbit.debugPos + "], " +
+                    "Orbit.debugVel[" + orbit.debugVel + "], " +
+                    "ReferenceBody[" + state.ReferenceBody + "], " +
+                    "Time[" + state.Time + "]");
+                #endif
 
-                    /* MKW TODO: Any way to check whether we're passing illegal parameters into this function? */
-                    if ( !PatchedConics.CalculatePatch(orbit, new Orbit(), state.Time, pars, null) )
-                    {
-                        UnityEngine.Debug.LogWarning("[Trajectories] could not calculate patch. " +
-                            "Orbit.trueAnomaly[" + orbit.trueAnomaly + "], " +
-                            "Orbit.altitude[" + orbit.altitude+ "], " +
-                            "Orbit.debugPos[" + orbit.debugPos+ "], " +
-                            "Orbit.debugVel[" + orbit.debugVel+ "], " +
-                            "ReferenceBody[" + state.ReferenceBody+"], " +
-                            "Time["+state.Time+"]");
-                    }
+                var ret = PatchedConics.CalculatePatch(orbit, new Orbit(), state.Time, pars, null)
+                #if false
+                if ( !ret )
+                {
+                    UnityEngine.Debug.LogWarning("[Trajectories] could not calculate patch. " +
+                        "Orbit.trueAnomaly[" + orbit.trueAnomaly + "], " +
+                        "Orbit.altitude[" + orbit.altitude+ "], " +
+                        "Orbit.debugPos[" + orbit.debugPos+ "], " +
+                        "Orbit.debugVel[" + orbit.debugVel+ "], " +
+                        "ReferenceBody[" + state.ReferenceBody+"], " +
+                        "Time["+state.Time+"]");
                 }
+                #endif
             }
             catch (Exception e)
             {
