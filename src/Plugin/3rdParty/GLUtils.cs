@@ -21,7 +21,8 @@ namespace Trajectories
             {
                 if (_material == null)
                 {
-                    Shader shader = Shader.Find("Legacy Shaders/Particles/Additive");
+                    Shader shader = Shader.Find("KSP/Particles/Additive");
+                    if (shader == null) shader = Shader.Find("Legacy Shaders/Particles/Additive");
                     if (shader == null) shader = Shader.Find("Particles/Additive");
                     _material = new Material(shader);
                 }
@@ -77,16 +78,23 @@ namespace Trajectories
 
         public static void GLTriangle(Vector3d worldVertices1, Vector3d worldVertices2, Vector3d worldVertices3, Color c, bool map)
         {
-            GL.PushMatrix();
-            material.SetPass(0);
-            GL.LoadOrtho();
-            GL.Begin(GL.TRIANGLES);
-            GL.Color(c);
-            GLVertex(worldVertices1, map);
-            GLVertex(worldVertices2, map);
-            GLVertex(worldVertices3, map);
-            GL.End();
-            GL.PopMatrix();
+            try
+            {
+                GL.PushMatrix();
+                material?.SetPass(0);
+                GL.LoadOrtho();
+                GL.Begin(GL.TRIANGLES);
+                GL.Color(c);
+                GLVertex(worldVertices1, map);
+                GLVertex(worldVertices2, map);
+                GLVertex(worldVertices3, map);
+                GL.End();
+                GL.PopMatrix();
+            }
+            catch(System.Exception e)
+            {
+                Debug.LogError("[Trajectories] Exception thrown in GLUtils.GLTriangle() : " + e.Message);
+            }
         }
 
         public static void GLVertex(Vector3d worldPosition, bool map = false)
@@ -134,26 +142,33 @@ namespace Trajectories
 
         //If dashed = false, draws 0-1-2-3-4-5...
         //If dashed = true, draws 0-1 2-3 4-5...
-        public static void DrawPath(CelestialBody mainBody, List<Vector3d> points, Color c, bool map, bool dashed = false)
+        public static void DrawPath(CelestialBody  mainBody, List<Vector3d> points, Color c, bool map, bool dashed = false)
         {
-            GL.PushMatrix();
-            material.SetPass(0);
-            GL.LoadPixelMatrix();
-            GL.Begin(GL.LINES);
-            GL.Color(c);
+            try
+            {
+                GL.PushMatrix();
+                material?.SetPass(0);
+                GL.LoadPixelMatrix();
+                GL.Begin(GL.LINES);
+                GL.Color(c);
 
             Vector3d camPos = map ? ScaledSpace.ScaledToLocalSpace(PlanetariumCamera.Camera.transform.position) : (Vector3d)FlightCamera.fetch.mainCamera.transform.position;
 
-            int step = (dashed ? 2 : 1);
-            for (int i = 0; i < points.Count - 1; i += step)
-            {
-                if (!IsOccluded(points[i], mainBody, camPos) && !IsOccluded(points[i + 1], mainBody, camPos))
+                int step = (dashed ? 2 : 1);
+                for (int i = 0; i < points.Count - 1; i += step)
                 {
+                if (!IsOccluded(points[i], mainBody, camPos) && !IsOccluded(points[i + 1], mainBody, camPos))
+                    {
                     GLPixelLine(points[i], points[i + 1], map);
+                    }
                 }
+                GL.End();
+                GL.PopMatrix();
             }
-            GL.End();
-            GL.PopMatrix();
+            catch (System.Exception e)
+            {
+                Debug.LogError("[Trajectories] Exception thrown in GLUtils.DrawPath() : " + e.Message);
+            }
         }
 
 #if false
@@ -181,5 +196,5 @@ namespace Trajectories
             DrawPath(o.referenceBody, points, c, true, false);
         }
 #endif
-        }
+    }
 }
