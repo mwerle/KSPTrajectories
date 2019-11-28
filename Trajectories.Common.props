@@ -1,0 +1,22 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <KSPDEVDIR>S:\Personal\KSP\KSP_Dev\</KSPDEVDIR>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemDefinitionGroup />
+  <ItemGroup>
+    <BuildMacro Include="KSPDEVDIR">
+      <Value>$(KSPDEVDIR)</Value>
+      <EnvironmentVariable>true</EnvironmentVariable>
+    </BuildMacro>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="$(KSPDEVDIR)\KSP_x64_Data\Managed\Assembly*.dll">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="$(KSPDEVDIR)\KSP_x64_Data\Managed\UnityEngine*.dll">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
