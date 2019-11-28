@@ -42,18 +42,29 @@ namespace Trajectories
         {
             //Debug.Log("Trajectories: getting FAR forces");
             if (vessel_ == null || vessel_.packed)
-                return Vector3.zero;
+            {
+                goto done;
+            }
 
             if (airVelocity.x == 0d || airVelocity.y == 0d || airVelocity.z == 0d)
             {
                 //Debug.LogWarning(string.Format("Trajectories: Getting FAR forces - Velocity: {0} | Altitude: {1}", airVelocity, altitude));
-                return Vector3.zero;
+                goto done;
             }
 
-            Vector3 worldAirVel = new Vector3((float)airVelocity.x, (float)airVelocity.y, (float)airVelocity.z);
-            var parameters = new object[] { vessel_, new Vector3(), new Vector3(), worldAirVel, altitude };
-            FARAPI_CalculateVesselAeroForces.Invoke(null, parameters);
-            return (Vector3)parameters[1];
+            try
+            {
+                Vector3 worldAirVel = new Vector3((float)airVelocity.x, (float)airVelocity.y, (float)airVelocity.z);
+                var parameters = new object[] { vessel_, new Vector3(), new Vector3(), worldAirVel, altitude };
+                FARAPI_CalculateVesselAeroForces.Invoke(null, parameters);
+                return (Vector3)parameters[1];
+            }
+            catch(Exception e)
+            {
+                Debug.LogError("[Trajectories] Exception while invoking FARAPI_CalculateVesselAeroForces : " + e.Message);
+            }
+        done:
+            return Vector3.zero;
         }
 
         public override Vector2 PackForces(Vector3d forces, double altitudeAboveSea, double velocity)
