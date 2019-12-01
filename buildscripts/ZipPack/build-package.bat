@@ -37,7 +37,7 @@ xcopy /y ..\..\..\README.md .
 
 echo.
 echo Compressing %TargetName% Release Package...
-IF EXIST "%rootPath%%TargetName%*.zip" del "%rootPath%%TargetName%*.zip"
+IF EXIST "%TargetName%%Dllversion%.zip" del "%TargetName%%Dllversion%.zip"
 "%scriptPath%7za.exe" a "..\..\..\%TargetName%%Dllversion%.zip" ..\..\..\package\GameData
 
 rem check all bootstrap files exist
