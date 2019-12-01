@@ -675,7 +675,7 @@ namespace Trajectories
                     "Time[" + state.Time + "]");
                 #endif
 
-                var ret = PatchedConics.CalculatePatch(orbit, new Orbit(), state.Time, pars, null)
+                var ret = PatchedConics.CalculatePatch(orbit, new Orbit(), state.Time, pars, null);
                 #if false
                 if ( !ret )
                 {
