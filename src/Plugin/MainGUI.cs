@@ -188,7 +188,7 @@ namespace Trajectories
             settings_page.padding.right = page_padding;
 
             // create popup dialog and add onDestroy listener
-           SpawnDialog();
+            SpawnDialog();
 
             //set data field labels justification
             SetDataFieldJustification();
@@ -232,7 +232,7 @@ namespace Trajectories
                 Hide();
                 return;
             }
-            if (Settings.fetch.MainGUIEnabled && !visible)
+            else if (Settings.fetch.MainGUIEnabled && (!visible || popup_dialog == null))
             {
                 Show();
             }
@@ -572,9 +572,8 @@ namespace Trajectories
         /// <summary> Shows window. </summary>
         public void Show()
         {
-            if (popup_dialog == null)
+            if( popup_dialog == null)
             {
-                Allocate();
                 SpawnDialog();
             }
             visible = true;
